@@ -30,7 +30,7 @@ use App\Http\Controllers\FirebaseController;
 
 Route::post('/subscribeToTopic', [FirebaseController::class, 'subscribeToTopic']);
 Route::get('/', 'HomeController@index')->name('home');
-Route::view('subscription/payment/view' , 'Subscription_payment_view')->name('subscription_payment_view');
+Route::view('subscription/payment/view', 'Subscription_payment_view')->name('subscription_payment_view');
 Route::get('maintenance-mode', 'HomeController@maintenanceMode')->name('maintenance_mode');
 // ->middleware('maintenance')->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class]);
 
@@ -52,7 +52,7 @@ Route::get('otp-resent', 'LoginController@otp_resent')->name('otp_resent');
 Route::get('lang/{locale}', 'HomeController@lang')->name('lang');
 Route::get('terms-and-conditions', 'HomeController@terms_and_conditions')->name('terms-and-conditions');
 Route::get('about-us', 'HomeController@about_us')->name('about-us');
-Route::match(['get', 'post'],'contact-us', 'HomeController@contact_us')->name('contact-us');
+Route::match(['get', 'post'], 'contact-us', 'HomeController@contact_us')->name('contact-us');
 Route::get('privacy-policy', 'HomeController@privacy_policy')->name('privacy-policy');
 Route::post('newsletter/subscribe', 'NewsletterController@newsLetterSubscribe')->name('newsletter.subscribe');
 
@@ -83,13 +83,14 @@ Route::get('payment-success', 'PaymentController@success')->name('payment-succes
 Route::get('payment-fail', 'PaymentController@fail')->name('payment-fail');
 Route::get('payment-cancel', 'PaymentController@cancel')->name('payment-cancel');
 
-Route::get('wallet-payment','WalletPaymentController@make_payment')->name('wallet.payment');
+Route::get('wallet-payment', 'WalletPaymentController@make_payment')->name('wallet.payment');
 
 $is_published = 0;
 try {
-$full_data = include('Modules/Gateways/Addon/info.php');
-$is_published = $full_data['is_published'] == 1 ? 1 : 0;
-} catch (\Exception $exception) {}
+    $full_data = include('Modules/Gateways/Addon/info.php');
+    $is_published = $full_data['is_published'] == 1 ? 1 : 0;
+} catch (\Exception $exception) {
+}
 
 if (!$is_published) {
     Route::group(['prefix' => 'payment'], function () {
@@ -200,7 +201,7 @@ if (!$is_published) {
 
 
 
-Route::get('/test',function (){
+Route::get('/test', function () {
     return view('errors.404');
 });
 

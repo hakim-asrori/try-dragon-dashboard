@@ -6453,4 +6453,11 @@
   '500_warning_message' => '500 warning message',
   'reload_page' => 'Reload page',
   'dine_in_order_option_is_disabled_by_admin' => 'Dine in order option is disabled by admin',
+  'ReCAPTCHA Status Turn ON' => 'ReCAPTCHA Status Turn ON',
+  'Take_Away' => 'Take Away',
+  'Dine_In' => 'Dine In',
+  'Coordinates out of zone' => 'Coordinates out of zone',
+  'The logo must not be greater than 2048 kilobytes.' => 'The logo must not be greater than 2048 kilobytes.',
+  'The cover photo must not be greater than 2048 kilobytes.' => 'The cover photo must not be greater than 2048 kilobytes.',
+  'The password is required' => 'The password is required',
 );
