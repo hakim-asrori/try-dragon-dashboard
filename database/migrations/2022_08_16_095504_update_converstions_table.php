@@ -14,7 +14,7 @@ class UpdateConverstionsTable extends Migration
     public function up()
     {
         Schema::table('conversations', function (Blueprint $table) {
-            $table->renameColumn('user_id','sender_id');
+            $table->renameColumn('user_id', 'sender_id');
             $table->string('sender_type');
             $table->foreignId('receiver_id');
             $table->string('receiver_type');
