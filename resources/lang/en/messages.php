@@ -6466,9 +6466,6 @@
   'GST' => 'GST',
   'add_your_paymen_ref_first' => 'Add your paymen ref first',
   'duitku qris' => 'Duitku qris',
-<<<<<<< HEAD
-);
-=======
   'payment_request' => 'Payment request',
   'Payment_Requests' => 'Payment Requests',
   'Payment_Request_List' => 'Payment Request List',
@@ -6485,4 +6482,3 @@
   'response_data' => 'Response data',
   'callback_data' => 'Callback data',
 );
->>>>>>> 5053d5f2cb5b1206cb54924ad10d5f74fc61830d
