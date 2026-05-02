@@ -31,6 +31,7 @@
                         <thead class="thead-light">
                             <tr>
                                 <th>{{ translate('messages.attribute_id') }}</th>
+                                <th>{{ translate('messages.attribute') }}</th>
                                 <th>{{ translate('messages.transaction_id') }}</th>
                                 <th>{{ translate('messages.payer_id') }}</th>
                                 <th>{{ translate('messages.payment_method') }}</th>
@@ -45,6 +46,7 @@
                             @foreach ($paymentRequests as $k => $pr)
                                 <tr>
                                     <td>{{ $pr->attribute_id ?? translate('messages.N/A') }}</td>
+                                    <td><span class="text-capitalize">{{ $pr->attribute ?? translate('messages.N/A') }}</span></td>
                                     <td>
                                         <span
                                             class="text-monospace">{{ $pr->transaction_id ?? translate('messages.N/A') }}</span>
