@@ -274,7 +274,8 @@ $order_sch = \App\Models\Order::Notpos()
                                         <span class="tio-circle nav-indicator-icon"></span>
                                         <span class="text-truncate sidebar--badge-container">
                                             {{ translate('messages.refunded') }}
-                                            <span class="badge badge-soft-danger badge-pill ml-1">{{ $order->refunded }}
+                                            <span
+                                                class="badge badge-soft-danger badge-pill ml-1">{{ $order->refunded }}
                                             </span>
                                         </span>
                                     </a>
@@ -1383,6 +1384,20 @@ $order_sch = \App\Models\Order::Notpos()
                         </li>
                     @endif
                     <!-- End withdraw -->
+
+                    @if (Helpers::module_permission_check('account'))
+                        <li
+                            class="navbar-vertical-aside-has-menu {{ Request::is('admin/payment-request*') ? 'active' : '' }}">
+                            <a class="js-navbar-vertical-aside-menu-link nav-link"
+                                href="{{ route('admin.payment-request') }}"
+                                title="{{ translate('messages.payment_request') }}">
+                                <i class="tio-files nav-icon"></i>
+                                <span
+                                    class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate">{{ translate('messages.payment_request') }}</span>
+                            </a>
+                        </li>
+                    @endif
+
                     @if (Helpers::module_permission_check('custom_role') || Helpers::module_permission_check('employee'))
                         <!-- Employee-->
                         <li class="nav-item">
@@ -1479,8 +1494,7 @@ $order_sch = \App\Models\Order::Notpos()
                                                 class="text-truncate">{{ translate('messages.subscription_Packages') }}</span>
                                         </a>
                                     </li>
-                                    <li
-                                        class="nav-item @yield('subscriberList')">
+                                    <li class="nav-item @yield('subscriberList')">
                                         <a class="nav-link "
                                             href="{{ route('admin.subscription.subscription_list') }}"
                                             title="{{ translate('messages.Subscriber_list') }}">
@@ -1528,7 +1542,8 @@ $order_sch = \App\Models\Order::Notpos()
                     </a>
                 </li>
 
-                <li class="navbar-vertical-aside-has-menu {{ Request::is('admin/login-settings*') ? 'active' : '' }}">
+                <li
+                    class="navbar-vertical-aside-has-menu {{ Request::is('admin/login-settings*') ? 'active' : '' }}">
                     <a class="nav-link " href="{{ route('admin.login-settings.index') }}"
                         title="{{ translate('messages.login_setup') }}">
                         <span class="tio-devices-apple nav-icon"></span>
@@ -1784,7 +1799,7 @@ $order_sch = \App\Models\Order::Notpos()
                             <i class="tio-puzzle nav-icon"></i>
                             <span
                                 class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate">{{ translate('Addon
-                                                                                                                                Menus') }}</span>
+                                                                                                                                                                                                                                                                                                                                                                Menus') }}</span>
                         </a>
                         <ul class="js-navbar-vertical-aside-submenu nav nav-sub"
                             style="display: {{ Request::is('admin/payment/configuration/*') || Request::is('admin/sms/configuration/*') ? 'block' : 'none' }}">
