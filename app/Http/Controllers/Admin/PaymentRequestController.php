@@ -9,9 +9,15 @@ use App\Models\PaymentRequest;
 
 class PaymentRequestController extends Controller
 {
-    public function __invoke()
+    public function __invoke(Request $request)
     {
-        $paymentRequests = PaymentRequest::all();
+        $paymentRequests = PaymentRequest::when($request->search, function ($q) use ($request) {
+                $q->where('transaction_id', 'like', "%{$request->search}%")
+                  ->orWhere('attribute_id', 'like', "%{$request->search}%")
+                  ->orWhere('payer_id', 'like', "%{$request->search}%");
+            })
+            ->latest()
+            ->paginate(config('default_pagination'));
 
         return view('admin-views.payment-request.index', compact('paymentRequests'));
     }
