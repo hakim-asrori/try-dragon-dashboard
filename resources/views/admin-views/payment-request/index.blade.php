@@ -19,15 +19,30 @@
                 <div class="search--button-wrapper">
                     <h3 class="card-title">
                         <span>{{ translate('messages.Payment_Request_List') }}</span>
-                        <span class="badge badge-soft-secondary" id="itemCount">{{ count($paymentRequests) }}</span>
+                        <span class="badge badge-soft-secondary" id="itemCount">{{ $paymentRequests->total() }}</span>
                     </h3>
+                    <form action="{{ route('admin.payment-request') }}" method="GET">
+                        <div class="input--group input-group input-group-merge input-group-flush">
+                            <input id="datatableSearch_" type="search" name="search" class="form-control"
+                                value="{{ request('search') }}"
+                                placeholder="{{ translate('messages.Search_by_transaction_id') }}"
+                                aria-label="{{ translate('messages.search') }}">
+                            <button type="submit" class="btn btn--secondary"><i class="tio-search"></i></button>
+                        </div>
+                    </form>
                 </div>
             </div>
 
             <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table
-                        class="table table-hover table-borderless table-thead-bordered table-nowrap table-align-middle card-table">
+                <div class="table-responsive datatable-custom">
+                    <table id="datatable"
+                        class="table table-hover table-borderless table-thead-bordered table-nowrap table-align-middle card-table"
+                        data-hs-datatables-options='{
+                            "order": [],
+                            "orderCellsTop": true,
+                            "paging": false,
+                            "columnDefs": [{ "orderable": false, "targets": 9 }]
+                        }'>
                         <thead class="thead-light">
                             <tr>
                                 <th>{{ translate('messages.attribute_id') }}</th>
@@ -46,7 +61,9 @@
                             @foreach ($paymentRequests as $k => $pr)
                                 <tr>
                                     <td>{{ $pr->attribute_id ?? translate('messages.N/A') }}</td>
-                                    <td><span class="text-capitalize">{{ $pr->attribute ?? translate('messages.N/A') }}</span></td>
+                                    <td><span
+                                            class="text-capitalize">{{ $pr->attribute ?? translate('messages.N/A') }}</span>
+                                    </td>
                                     <td>
                                         <span
                                             class="text-monospace">{{ $pr->transaction_id ?? translate('messages.N/A') }}</span>
@@ -105,6 +122,17 @@
                             <h5>{{ translate('messages.no_data_found') }}</h5>
                         </div>
                     @endif
+                </div>
+            </div>
+
+            <div class="card-footer p-0 border-0">
+                <!-- Pagination -->
+                <div class="page-area px-4 pb-3">
+                    <div class="d-flex align-items-center justify-content-end">
+                        <div>
+                            {!! $paymentRequests->appends($_GET)->links() !!}
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -274,6 +302,10 @@
     <script>
         "use strict";
 
+        $(document).on('ready', function() {
+            $.HSCore.components.HSDatatables.init($('#datatable'));
+        });
+
         $('.detail-btn').on('click', function() {
             let data = $(this).data();
 
@@ -291,11 +323,11 @@
             if (data.is_paid == 1) {
                 $('#modal_status').html(
                     '<label class="badge badge-soft-success rounded-pill">{{ translate('messages.paid') }}</label>'
-                    );
+                );
             } else {
                 $('#modal_status').html(
                     '<label class="badge badge-soft-warning rounded-pill">{{ translate('messages.unpaid') }}</label>'
-                    );
+                );
             }
 
             try {

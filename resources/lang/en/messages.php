@@ -6479,4 +6479,5 @@
   'request_data' => 'Request data',
   'response_data' => 'Response data',
   'callback_data' => 'Callback data',
+  'Search_by_transaction_id' => 'Search by transaction id',
 );
