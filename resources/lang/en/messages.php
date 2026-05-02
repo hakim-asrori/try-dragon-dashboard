@@ -6460,4 +6460,6 @@
   'The logo must not be greater than 2048 kilobytes.' => 'The logo must not be greater than 2048 kilobytes.',
   'The cover photo must not be greater than 2048 kilobytes.' => 'The cover photo must not be greater than 2048 kilobytes.',
   'The password is required' => 'The password is required',
+  'All_the_translations_may_not_be_fully_accurate.' => 'All the translations may not be fully accurate.',
+  'custom_date_order' => 'Custom date order',
 );
