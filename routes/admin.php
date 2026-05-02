@@ -2,8 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 
-use App\Http\Controllers\Admin\CashBackController;
-
+use App\Http\Controllers\Admin\{CashBackController, PaymentRequestController};
 
 Route::group(['namespace' => 'Admin', 'as' => 'admin.'], function () {
 
@@ -26,6 +25,7 @@ Route::group(['namespace' => 'Admin', 'as' => 'admin.'], function () {
         Route::resource('account-transaction', 'AccountTransactionController')->middleware('module:account');
         Route::get('export-account-transaction', 'AccountTransactionController@export_account_transaction')->name('export-account-transaction');
         Route::post('search-account-transaction', 'AccountTransactionController@search_account_transaction')->name('search-account-transaction');
+        Route::get('payment-request', PaymentRequestController::class)->name('payment-request')->middleware('module:account');
 
         Route::resource('provide-deliveryman-earnings', 'ProvideDMEarningController')->middleware('module:provide_dm_earning');
         Route::get('export-deliveryman-earnings', 'ProvideDMEarningController@dm_earning_list_export')->name('export-deliveryman-earning');

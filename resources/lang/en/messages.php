@@ -6466,4 +6466,23 @@
   'GST' => 'GST',
   'add_your_paymen_ref_first' => 'Add your paymen ref first',
   'duitku qris' => 'Duitku qris',
+<<<<<<< HEAD
 );
+=======
+  'payment_request' => 'Payment request',
+  'Payment_Requests' => 'Payment Requests',
+  'Payment_Request_List' => 'Payment Request List',
+  'payer_id' => 'Payer id',
+  'Payment_Request_Detail' => 'Payment Request Detail',
+  'transaction_info' => 'Transaction info',
+  'platform' => 'Platform',
+  'attribute' => 'Attribute',
+  'attribute_id' => 'Attribute id',
+  'payer_info' => 'Payer info',
+  'receiver_id' => 'Receiver id',
+  'raw_data' => 'Raw data',
+  'request_data' => 'Request data',
+  'response_data' => 'Response data',
+  'callback_data' => 'Callback data',
+);
+>>>>>>> 5053d5f2cb5b1206cb54924ad10d5f74fc61830d

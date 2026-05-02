@@ -54,7 +54,7 @@ class DuitkuController extends Controller
             "email" => $customer->email,
             "phoneNumber" => $customer->phone,
             "callbackUrl" => env('APP_DEBUG') ? env('PG_CALLBACK') : route('duitku.callback.billing'),
-            "returnUrl" => route('payment-success'),
+            "returnUrl" => $data->external_redirect_link ? $data->external_redirect_link : route('payment-success'),
             "signature" => $this->generateSignature(
                 merchantCode: $this->config_values->merchant_code,
                 referenceId: $merchantOrderId,
