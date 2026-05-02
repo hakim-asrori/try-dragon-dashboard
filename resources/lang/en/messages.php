@@ -6460,4 +6460,8 @@
   'The logo must not be greater than 2048 kilobytes.' => 'The logo must not be greater than 2048 kilobytes.',
   'The cover photo must not be greater than 2048 kilobytes.' => 'The cover photo must not be greater than 2048 kilobytes.',
   'The password is required' => 'The password is required',
+  'The selected gateway is invalid.' => 'The selected gateway is invalid.',
+  'GST' => 'GST',
+  'add_your_paymen_ref_first' => 'Add your paymen ref first',
+  'duitku qris' => 'Duitku qris',
 );

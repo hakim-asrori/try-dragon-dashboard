@@ -1,22 +1,11 @@
 <?php
 
+use Illuminate\Support\Facades\{DB, Route};
+
 use App\Models\BusinessSetting;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\SslCommerzPaymentController;
-use App\Http\Controllers\StripePaymentController;
-use App\Http\Controllers\PaymobController;
-use App\Http\Controllers\FlutterwaveV3Controller;
-use App\Http\Controllers\PaytmController;
-use App\Http\Controllers\PaypalPaymentController;
-use App\Http\Controllers\PaytabsController;
-use App\Http\Controllers\LiqPayController;
-use App\Http\Controllers\RazorPayController;
-use App\Http\Controllers\SenangPayController;
-use App\Http\Controllers\MercadoPagoController;
-use App\Http\Controllers\BkashPaymentController;
-use App\Http\Controllers\PaystackController;
-use App\Http\Controllers\FirebaseController;
+use App\Http\Controllers\{BkashPaymentController, FirebaseController, FlutterwaveV3Controller, LiqPayController, MercadoPagoController, PaymobController, PaypalPaymentController, PaystackController, PaytabsController, PaytmController, RazorPayController, SenangPayController, SslCommerzPaymentController, StripePaymentController};
+use App\Http\Controllers\PG\DuitkuController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -193,6 +182,14 @@ if (!$is_published) {
             Route::any('pay', [PaytabsController::class, 'payment'])->name('pay');
             Route::any('callback', [PaytabsController::class, 'callback'])->name('callback')->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class]);
             Route::any('response', [PaytabsController::class, 'response'])->name('response')->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class]);
+        });
+
+        //DUITKU
+        Route::group(['as' => 'duitku.'], function () {
+            Route::prefix('duitku-qris')->group(function () {
+                Route::any('pay', [DuitkuController::class, 'paymentQr'])->name('pay');
+            });
+            Route::any('duitku/callback-billing', [DuitkuController::class, 'callbackBilling'])->name('callback.billing')->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class]);
         });
     });
 }

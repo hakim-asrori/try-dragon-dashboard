@@ -6464,4 +6464,6 @@
   'We look forward to helping you boost your visibility & reach more customers' => 'Kami berharap dapat membantu Anda meningkatkan visibilitas dan menjangkau lebih banyak pelanggan',
   'until I change' => 'sampai saya berubah',
   'Message sent' => 'Message sent',
+  'payment_method_updated_successfully' => 'Payment method updated successfully',
+  'order_canceled_successfully_and_for_refund_amount_contact_admin' => 'Order canceled successfully and for refund amount contact admin',
 );
