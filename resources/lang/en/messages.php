@@ -6462,4 +6462,8 @@
   'The password is required' => 'The password is required',
   'All_the_translations_may_not_be_fully_accurate.' => 'All the translations may not be fully accurate.',
   'custom_date_order' => 'Custom date order',
+  'The selected gateway is invalid.' => 'The selected gateway is invalid.',
+  'GST' => 'GST',
+  'add_your_paymen_ref_first' => 'Add your paymen ref first',
+  'duitku qris' => 'Duitku qris',
 );

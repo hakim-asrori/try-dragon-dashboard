@@ -2,30 +2,14 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\Setting;
-use App\Traits\Processor;
-use App\Models\Restaurant;
-use App\Models\DataSetting;
-use App\Models\Translation;
-use App\Models\PriorityList;
 use Illuminate\Http\Request;
-use App\Models\EmailTemplate;
+use Illuminate\Support\Facades\{Config, DB, File, Mail, Session, Storage, Validator};
+
+use App\Models\{BusinessSetting, DataSetting, EmailTemplate, NotificationMessage, NotificationSetting, OrderCancelReason, PriorityList, Restaurant, RestaurantConfig, RestaurantSubscription, Setting, Translation};
+use App\Traits\Processor;
 use App\CentralLogics\Helpers;
-use App\Models\BusinessSetting;
-use App\Models\RestaurantConfig;
-use App\Models\OrderCancelReason;
-use Illuminate\Support\Facades\DB;
-use App\Models\NotificationMessage;
-use App\Models\NotificationSetting;
 use App\Http\Controllers\Controller;
 use Brian2694\Toastr\Facades\Toastr;
-use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Mail;
-use App\Models\RestaurantSubscription;
-use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Validator;
 
 class BusinessSettingsController extends Controller
 {
@@ -849,7 +833,7 @@ class BusinessSettingsController extends Controller
                 }
             }
         }
-        $data_values = Setting::whereIn('settings_type', ['payment_config'])->whereIn('key_name', ['ssl_commerz', 'paypal', 'stripe', 'razor_pay', 'senang_pay', 'paytabs', 'paystack', 'paymob_accept', 'paytm', 'flutterwave', 'liqpay', 'bkash', 'mercadopago'])->get();
+        $data_values = Setting::whereIn('settings_type', ['payment_config'])->get();
 
         return view('admin-views.business-settings.payment-index', compact('published_status', 'payment_url', 'data_values'));
     }
@@ -867,7 +851,7 @@ class BusinessSettingsController extends Controller
         $request['status'] = $request->status ?? 0;
 
         $validation = [
-            'gateway' => 'required|in:ssl_commerz,paypal,stripe,razor_pay,senang_pay,paytabs,paystack,paymob_accept,paytm,flutterwave,liqpay,bkash,mercadopago',
+            'gateway' => 'required|in:mercadopago,duitku_qris',
             'mode' => 'required|in:live,test'
         ];
 
@@ -970,6 +954,15 @@ class BusinessSettingsController extends Controller
                 'app_secret' => 'required_if:status,1',
                 'username' => 'required_if:status,1',
                 'password' => 'required_if:status,1',
+            ];
+        } elseif ($request['gateway'] == 'duitku_qris') {
+            $additional_data = [
+                'status' => 'required|in:1,0',
+                'base_url' => 'required_if:status,1',
+                'merchant_code' => 'required_if:status,1',
+                'api_key' => 'required_if:status,1',
+                'secret_key' => 'required_if:status,1',
+                'method' => 'required_if:status,1',
             ];
         }
 

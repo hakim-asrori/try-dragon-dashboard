@@ -6463,5 +6463,8 @@ return array (
   'The cover photo must not be greater than 2048 kilobytes.' => 'The cover photo must not be greater than 2048 kilobytes.',
   'The password is required' => 'The password is required',
   'We look forward to helping you boost your visibility & reach more customers' => 'Kami berharap dapat membantu Anda meningkatkan visibilitas dan menjangkau lebih banyak pelanggan',
-  'until I change' => 'sampai aku berubah',
+  'until I change' => 'sampai saya berubah',
+  'Message sent' => 'Message sent',
+  'payment_method_updated_successfully' => 'Payment method updated successfully',
+  'order_canceled_successfully_and_for_refund_amount_contact_admin' => 'Order canceled successfully and for refund amount contact admin',
 );

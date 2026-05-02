@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+
 use App\Traits\HasUuid;
 
 class PaymentRequest extends Model
@@ -12,4 +13,10 @@ class PaymentRequest extends Model
     use HasFactory;
 
     protected $table = 'payment_requests';
+
+    protected $guarded = [];
+
+    protected $casts = [
+        'payment_amount' => 'float'
+    ];
 }

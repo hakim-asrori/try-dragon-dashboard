@@ -1,0 +1,4 @@
+perbaikan
+- app\Providers\AuthServiceProvider.php pada load keys jadi Passport::loadKeysFrom(__DIR__ . '/../../storage/oauth');
+- app\Http\Middleware\APIGuestMiddleware.php cek apakah token null atau exists
+- app\Http\Controllers\Vendor\OrderController.php cek apakah array search lebih dari 0
