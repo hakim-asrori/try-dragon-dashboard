@@ -1,20 +1,10 @@
 <?php
 
-use App\Models\Admin;
-use App\Models\Order;
-use App\Models\Restaurant;
-use App\Models\AdminWallet;
-use App\Models\DeliveryMan;
-use App\Models\WalletPayment;
-use App\CentralLogics\Helpers;
-use App\Models\BusinessSetting;
-use App\CentralLogics\OrderLogic;
-use App\Models\AccountTransaction;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\{DB, Mail};
+
+use App\Models\{AccountTransaction, Admin, AdminWallet, BusinessSetting, DeliveryMan, Log, Order, Restaurant, SubscriptionBillingAndRefundHistory, WalletPayment, WalletTopup, WalletTransaction};
+use App\CentralLogics\{CustomerLogic, Helpers, OrderLogic};
 use App\Mail\OrderVerificationMail;
-use App\CentralLogics\CustomerLogic;
-use Illuminate\Support\Facades\Mail;
-use App\Models\SubscriptionBillingAndRefundHistory;
 use Brian2694\Toastr\Facades\Toastr;
 
 
@@ -262,7 +252,7 @@ if (!function_exists('addon_published_status')) {
     {
         $is_published = 0;
         try {
-            if(file_exists("Modules/{$module_name}/Addon/info.php")){
+            if (file_exists("Modules/{$module_name}/Addon/info.php")) {
                 $full_data = include("Modules/{$module_name}/Addon/info.php");
                 $is_published = $full_data['is_published'] == 1 ? 1 : 0;
             }
@@ -306,7 +296,7 @@ if (!function_exists('getWebConfig')) {
         if (in_array($name, $check) && session()->has($name)) {
             $config = session($name);
         } else {
-            $data =Helpers::getSettingsDataFromConfig(settings:$name);
+            $data = Helpers::getSettingsDataFromConfig(settings: $name);
             // $data = BusinessSetting::where(['key' => $name])->first();
             if (isset($data)) {
                 $config = json_decode($data['value'], true);
@@ -321,5 +311,58 @@ if (!function_exists('getWebConfig')) {
         }
 
         return $config;
+    }
+}
+
+// {"amount": "20000", "reference": "DS21558267R8I15AX2A3DUBV", "signature": "GQ26XBV0CVS3I0CGUTS", "resultCode": "00", "merchantCode": "DS21558", "paymentMethod": "GQ", "productDetail": "Order+#TR-67C52AD2-477D-41EB-AA5D-64965F0CCC0F", "merchantUserId": "pelanggan_anda@email.com", "settlementDate": "2026-05-04", "additionalParam": "", "merchantOrderId": "TR-67C52AD2-477D-41EB-AA5D-64965F0CCC0F"}
+if (!function_exists('wallet_topup_success')) {
+    function wallet_topup_success($data)
+    {
+        DB::transaction(function () use ($data) {
+            $wallet = WalletTopup::find($data->attribute_id);
+            if (!$wallet) {
+                info('Wallet topup not found');
+            }
+
+            if ($wallet->status === 'paid') {
+                info('Wallet topup already paid');
+            }
+
+            if ($wallet->status !== 'pending') {
+                info('Wallet topup not pending');
+            }
+
+            Helpers::dm_wallet_transaction(delivery_man_id: $wallet->topupable_id, amount: $wallet->net_amount, referance: $wallet->id, type: 'dm_wallet_topup');
+
+            $wallet->update([
+                'status' => 'paid',
+                'paid_at' => now()
+            ]);
+        });
+    }
+}
+
+if (!function_exists('wallet_topup_fail')) {
+    function wallet_topup_fail($data)
+    {
+        DB::transaction(function () use ($data) {
+            $wallet = WalletTopup::find($data->attribute_id);
+            if (!$wallet) {
+                info('Wallet topup not found');
+            }
+
+            if ($wallet->status === 'paid') {
+                info('Wallet topup already paid');
+            }
+
+            if ($wallet->status !== 'pending') {
+                info('Wallet topup not pending');
+            }
+
+            $wallet->update([
+                'status' => 'failed',
+                'failed_at' => now()
+            ]);
+        });
     }
 }
