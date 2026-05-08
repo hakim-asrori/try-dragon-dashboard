@@ -963,6 +963,13 @@ class BusinessSettingsController extends Controller
                 'api_key' => 'required_if:status,1',
                 'secret_key' => 'required_if:status,1',
                 'method' => 'required_if:status,1',
+                'charge_to' => 'required_if:status,1|in:customer,merchant',
+                'vendor_fee_amount' => 'required_if:status,1|min:0',
+                'vendor_fee_percentage' => 'required_if:status,1|min:0',
+                'surcharge_amount' => 'required_if:status,1|min:0',
+                'surcharge_percentage' => 'required_if:status,1|min:0',
+                'trx_min_amount' => 'required_if:status,1|min:0',
+                'trx_max_amount' => 'required_if:status,1|min:0',
             ];
         }
 

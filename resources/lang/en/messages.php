@@ -6480,4 +6480,12 @@
   'response_data' => 'Response data',
   'callback_data' => 'Callback data',
   'Search_by_transaction_id' => 'Search by transaction id',
+  'custom_date_order' => 'Custom date order',
+  'customer_can_cancel_order' => 'Customer can cancel order',
+  'customer_can_cancel_order?' => 'Customer can cancel order?',
+  'If_you_enable_this,_Customers_can_customer_can_cancel_order' => 'If you enable this, Customers can cancel order',
+  'If_you_disable_this,_customer_can_cancel_order_hidden_from_the_Customer_App_&_Website.' => 'If you disable this, customer can cancel order hidden from the Customer App & Website.',
+  'wallet_topup_problem' => 'Wallet topup problem',
+  'Payment amount can not be 0' => 'Payment amount can not be 0',
+  'order_canceled_successfully_and_for_refund_amount_contact_admin' => 'Order canceled successfully and for refund amount contact admin',
 );

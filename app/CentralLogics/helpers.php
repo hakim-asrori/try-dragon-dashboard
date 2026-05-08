@@ -2,69 +2,20 @@
 
 namespace App\CentralLogics;
 
-use App\Models\Allergy;
-use App\Models\Nutrition;
+use Illuminate\Support\{Carbon, Str};
+use Illuminate\Support\Facades\{App, Cache, Config, DB, Http, Mail, Schema, Session, Storage};
+use Laravelpkg\Laravelchk\Http\Controllers\LaravelchkController;
+use DateInterval;
+use DatePeriod;
 use DateTime;
 use Exception;
-use DatePeriod;
-use DateInterval;
-use App\Models\Log;
-use App\Models\Food;
-use App\Models\User;
-use App\Models\Zone;
-use App\Models\AddOn;
-use App\Models\Order;
-use App\Library\Payer;
-use App\Models\Coupon;
-use App\Models\Review;
-use App\Models\Expense;
-use App\Models\TimeLog;
-use App\Models\Vehicle;
-use App\Traits\Payment;
-use App\Mail\PlaceOrder;
-use App\Models\CashBack;
-use App\Models\Category;
-use App\Models\Currency;
-use App\Models\DMReview;
-use App\Library\Receiver;
-use App\Models\Restaurant;
-use App\Models\VisitorLog;
-use App\Models\DataSetting;
-use App\Models\DeliveryMan;
-use App\Models\Translation;
-use Illuminate\Support\Str;
-use Illuminate\Support\Carbon;
-use App\Models\BusinessSetting;
-use App\Models\VariationOption;
-use App\Models\RestaurantWallet;
-use App\CentralLogics\OrderLogic;
-use App\Models\DeliveryManWallet;
-use App\Models\WalletTransaction;
-use Illuminate\Support\Facades\DB;
-use App\Mail\OrderVerificationMail;
-use App\Models\NotificationMessage;
-use App\Models\NotificationSetting;
-use App\Models\SubscriptionPackage;
-use App\Traits\PaymentGatewayTrait;
-use Illuminate\Support\Facades\App;
-use App\Mail\SubscriptionSuccessful;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Mail;
-use App\CentralLogics\RestaurantLogic;
-use App\Mail\SubscriptionRenewOrShift;
-use App\Models\RestaurantSubscription;
-use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Schema;
-use App\Library\Payment as PaymentInfo;
-use App\Models\SubscriptionTransaction;
-use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Storage;
-use App\Models\RestaurantNotificationSetting;
+
+use App\Models\{AddOn, Allergy, BusinessSetting, CashBack, Category, Coupon, Currency, DMReview, DataSetting, DeliveryMan, DeliveryManWallet, Expense, Food, Log, NotificationMessage, NotificationSetting, Nutrition, Order, Restaurant, RestaurantNotificationSetting, RestaurantSubscription, RestaurantWallet, Review, SubscriptionBillingAndRefundHistory, SubscriptionPackage, SubscriptionTransaction, TimeLog, Translation, User, VariationOption, Vehicle, VisitorLog, WalletTransaction, Zone};
+use App\Library\{Payer, Payment as PaymentInfo, Receiver};
+use App\Traits\{NotificationDataSetUpTrait, Payment, PaymentGatewayTrait};
+use App\Mail\{OrderVerificationMail, PlaceOrder, SubscriptionRenewOrShift, SubscriptionSuccessful};
+use App\CentralLogics\{OrderLogic, RestaurantLogic};
 use MatanYadaev\EloquentSpatial\Objects\Point;
-use App\Models\SubscriptionBillingAndRefundHistory;
-use Laravelpkg\Laravelchk\Http\Controllers\LaravelchkController;
-use App\Traits\NotificationDataSetUpTrait;
 
 class Helpers
 {
@@ -3216,8 +3167,8 @@ class Helpers
         $wallet_transaction->transaction_id = Str::uuid();
         $wallet_transaction->reference = $referance;
         $wallet_transaction->transaction_type = $type;
-        $wallet_transaction->admin_bonus = $amount;
-        $wallet_transaction->credit = $amount;
+        $wallet_transaction->admin_bonus = $type == 'dm_admin_bonus' ? $amount : 0;
+        $wallet_transaction->credit = $type == 'dm_admin_bonus' ? 0 : $amount;
         $wallet_transaction->debit = 0;
         $wallet_transaction->balance = $dmwallet->total_earning + $amount;
         $wallet_transaction->created_at = now();
@@ -3228,7 +3179,7 @@ class Helpers
             $wallet_transaction->save();
             $dmwallet->total_earning = $dmwallet->total_earning + $amount;
             $dmwallet->save();
-            Helpers::expenseCreate(amount: $amount, type: $type, datetime: now(), created_by: 'admin', delivery_man_id: $delivery_man_id);
+            // Helpers::expenseCreate(amount: $amount, type: $type, datetime: now(), created_by: 'admin', delivery_man_id: $delivery_man_id);
             DB::commit();
             return true;
         } catch (Exception $ex) {

@@ -2,16 +2,13 @@
 
 namespace App\Traits;
 
-use Exception;
-use App\Models\Setting;
-use App\Models\PaymentRequest;
-use Illuminate\Http\JsonResponse;
+use Illuminate\Http\{JsonResponse, RedirectResponse};
 use Illuminate\Routing\Redirector;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\App;
-use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\{App, DB, Storage};
 use Illuminate\Foundation\Application;
-use Illuminate\Support\Facades\Storage;
+use Exception;
+
+use App\Models\{PaymentRequest, Setting};
 
 trait  Processor
 {
@@ -66,9 +63,9 @@ trait  Processor
 
     public static function getDisk()
     {
-        $config=\App\CentralLogics\Helpers::get_business_settings('local_storage');
+        $config = \App\CentralLogics\Helpers::get_business_settings('local_storage');
 
-        return isset($config)?($config==0?'s3':'public'):'public';
+        return isset($config) ? ($config == 0 ? 's3' : 'public') : 'public';
     }
     public function file_uploader(string $dir, string $format, $image = null, $old_image = null)
     {

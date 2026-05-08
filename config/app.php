@@ -180,6 +180,7 @@ return [
         // FruitCake\Cors\CorsServiceProvider::class,
         Maatwebsite\Excel\ExcelServiceProvider::class,
         App\Providers\FirebaseServiceProvider::class,
+        LaraMint\LaravelBrain\LaravelBrainServiceProvider::class,
     ],
 
     /*

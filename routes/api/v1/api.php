@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+
+use App\Http\Controllers\Api\V1\WalletTopupController;
 use App\WebSockets\Handler\DMLocationSocketHandler;
 use BeyondCode\LaravelWebSockets\Facades\WebSocketsRouter;
 
@@ -15,7 +17,7 @@ use BeyondCode\LaravelWebSockets\Facades\WebSocketsRouter;
 |
 */
 
-Route::group(['namespace' => 'Api\V1', 'middleware'=>['localization','react']], function () {
+Route::group(['namespace' => 'Api\V1', 'middleware' => ['localization', 'react']], function () {
     Route::get('zone/list', 'ZoneController@get_zones');
     Route::get('zone/check', 'ZoneController@zonesCheck');
     Route::get('advertisement/list', 'AdvertisementController@get_adds');
@@ -32,7 +34,7 @@ Route::group(['namespace' => 'Api\V1', 'middleware'=>['localization','react']], 
         Route::put('reset-password', 'PasswordResetController@reset_password_submit');
         Route::put('firebase-reset-password', 'PasswordResetController@firebase_auth_verify');
 
-        Route::post('guest/request','CustomerAuthController@guest_request');
+        Route::post('guest/request', 'CustomerAuthController@guest_request');
         Route::post('firebase-verify-token', 'CustomerAuthController@firebase_auth_verify');
 
         Route::group(['prefix' => 'delivery-man'], function () {
@@ -48,29 +50,29 @@ Route::group(['namespace' => 'Api\V1', 'middleware'=>['localization','react']], 
             Route::post('forgot-password', 'VendorPasswordResetController@reset_password_request');
             Route::post('verify-token', 'VendorPasswordResetController@verify_token');
             Route::put('reset-password', 'VendorPasswordResetController@reset_password_submit');
-            Route::post('register','VendorLoginController@register');
+            Route::post('register', 'VendorLoginController@register');
         });
     });
 
-        //Store Subscription
-        Route::group(['prefix' => 'vendor','namespace' => 'Vendor'], function () {
-            Route::get('package-view', 'SubscriptionController@package_view');
-            Route::post('business_plan', 'SubscriptionController@business_plan');
-            Route::post('cancel-subscription', 'SubscriptionController@cancelSubscription');
-            Route::get('check-product-limits', 'SubscriptionController@checkProductLimits');
-        });
+    //Store Subscription
+    Route::group(['prefix' => 'vendor', 'namespace' => 'Vendor'], function () {
+        Route::get('package-view', 'SubscriptionController@package_view');
+        Route::post('business_plan', 'SubscriptionController@business_plan');
+        Route::post('cancel-subscription', 'SubscriptionController@cancelSubscription');
+        Route::get('check-product-limits', 'SubscriptionController@checkProductLimits');
+    });
 
 
     Route::group(['prefix' => 'delivery-man'], function () {
         Route::get('last-location', 'DeliverymanController@get_last_location');
 
 
-        Route::group(['prefix' => 'reviews','middleware'=>['auth:api']], function () {
+        Route::group(['prefix' => 'reviews', 'middleware' => ['auth:api']], function () {
             Route::get('/{delivery_man_id}', 'DeliveryManReviewController@get_reviews');
             Route::get('rating/{delivery_man_id}', 'DeliveryManReviewController@get_rating');
             Route::post('/submit', 'DeliveryManReviewController@submit_review');
         });
-        Route::group(['middleware'=>['dm.api']], function () {
+        Route::group(['middleware' => ['dm.api']], function () {
             Route::get('profile', 'DeliverymanController@get_profile');
             Route::get('notifications', 'DeliverymanController@get_notifications');
             Route::put('update-profile', 'DeliverymanController@update_profile');
@@ -120,7 +122,7 @@ Route::group(['namespace' => 'Api\V1', 'middleware'=>['localization','react']], 
         });
     });
 
-    Route::group(['prefix' => 'vendor', 'namespace' => 'Vendor', 'middleware'=>['vendor.api']], function () {
+    Route::group(['prefix' => 'vendor', 'namespace' => 'Vendor', 'middleware' => ['vendor.api']], function () {
         Route::get('notifications', 'VendorController@get_notifications');
         Route::get('profile', 'VendorController@get_profile');
         Route::post('update-active-status', 'VendorController@active_status');
@@ -178,7 +180,7 @@ Route::group(['namespace' => 'Api\V1', 'middleware'=>['localization','react']], 
         Route::post('coupon-search', 'CouponController@search')->name('search');
         Route::get('coupon/view-without-translate', 'CouponController@view_without_translate');
 
-        Route::group([ 'prefix' => 'advertisement', 'as' => 'advertisement.'], function () {
+        Route::group(['prefix' => 'advertisement', 'as' => 'advertisement.'], function () {
             Route::get('/', 'AdvertisementController@index');
             Route::get('details/{id}', 'AdvertisementController@show');
             Route::delete('delete/{id}', 'AdvertisementController@destroy');
@@ -186,7 +188,6 @@ Route::group(['namespace' => 'Api\V1', 'middleware'=>['localization','react']], 
             Route::post('update/{id}', 'AdvertisementController@update');
             Route::put('/status', 'AdvertisementController@status')->name('status');
             Route::post('copy-add-post', 'AdvertisementController@copyAddPost');
-
         });
 
         //remove account
@@ -204,7 +205,7 @@ Route::group(['namespace' => 'Api\V1', 'middleware'=>['localization','react']], 
         Route::get('attributes', 'AttributeController@list');
 
         // Addon
-        Route::group(['prefix'=>'addon'], function(){
+        Route::group(['prefix' => 'addon'], function () {
             Route::get('/', 'AddOnController@list');
             Route::post('store', 'AddOnController@store');
             Route::put('update', 'AddOnController@update');
@@ -225,7 +226,7 @@ Route::group(['namespace' => 'Api\V1', 'middleware'=>['localization','react']], 
             Route::get('assign-deliveryman', 'DeliveryManController@assign_deliveryman');
         });
         // Food
-        Route::group(['prefix'=>'product'], function(){
+        Route::group(['prefix' => 'product'], function () {
             Route::post('store', 'FoodController@store');
             Route::put('update', 'FoodController@update');
             Route::delete('delete', 'FoodController@delete');
@@ -236,12 +237,10 @@ Route::group(['namespace' => 'Api\V1', 'middleware'=>['localization','react']], 
             Route::put('reply-update', 'FoodController@update_reply');
             Route::get('details/{id}', 'FoodController@get_product');
             Route::put('update-stock', 'FoodController@updateStock');
-
-
         });
 
         // POS
-        Route::group(['prefix'=>'pos'], function(){
+        Route::group(['prefix' => 'pos'], function () {
             Route::get('orders', 'POSController@order_list');
             Route::post('place-order', 'POSController@place_order');
             Route::get('customers', 'POSController@get_customers');
@@ -334,12 +333,12 @@ Route::group(['namespace' => 'Api\V1', 'middleware'=>['localization','react']], 
         //Remove account
         Route::delete('remove-account', 'CustomerController@remove_account');
 
-        Route::group(['prefix'=>'loyalty-point'], function() {
+        Route::group(['prefix' => 'loyalty-point'], function () {
             Route::post('point-transfer', 'LoyaltyPointController@point_transfer');
             Route::get('transactions', 'LoyaltyPointController@transactions');
         });
 
-        Route::group(['prefix'=>'wallet'], function() {
+        Route::group(['prefix' => 'wallet'], function () {
             Route::get('transactions', 'WalletController@transactions');
             Route::get('bonuses', 'WalletController@get_bonus');
             Route::post('add-fund', 'WalletController@add_fund');
@@ -369,10 +368,9 @@ Route::group(['namespace' => 'Api\V1', 'middleware'=>['localization','react']], 
         });
 
 
-        Route::put('subscription/update_schedule/{subscription}','OrderSubscriptionController@update_schedule');
-        Route::get('subscription/{id}/{tab?}','OrderSubscriptionController@show');
-        Route::resource('subscription','OrderSubscriptionController');
-
+        Route::put('subscription/update_schedule/{subscription}', 'OrderSubscriptionController@update_schedule');
+        Route::get('subscription/{id}/{tab?}', 'OrderSubscriptionController@show');
+        Route::resource('subscription', 'OrderSubscriptionController');
     });
 
     Route::group(['prefix' => 'customer', 'middleware' => 'apiGuestCheck'], function () {
@@ -392,10 +390,10 @@ Route::group(['namespace' => 'Api\V1', 'middleware'=>['localization','react']], 
         });
         Route::get('getPendingReviews', 'OrderController@getPendingReviews');
 
-        Route::post('food-list','OrderController@food_list');
+        Route::post('food-list', 'OrderController@food_list');
         Route::get('order-again', 'OrderController@order_again');
 
-        Route::group(['prefix'=>'cart'], function() {
+        Route::group(['prefix' => 'cart'], function () {
             Route::get('list', 'CartController@get_carts');
             Route::post('add', 'CartController@add_to_cart');
             Route::post('update', 'CartController@update_cart');
@@ -403,7 +401,6 @@ Route::group(['namespace' => 'Api\V1', 'middleware'=>['localization','react']], 
             Route::delete('remove', 'CartController@remove_cart');
             Route::post('add-multiple', 'CartController@add_to_cart_multiple');
         });
-
     });
 
 
@@ -430,7 +427,7 @@ Route::group(['namespace' => 'Api\V1', 'middleware'=>['localization','react']], 
 
     Route::get('coupon/restaurant-wise-coupon', 'CouponController@restaurant_wise_coupon');
 
-    Route::post('newsletter/subscribe','NewsletterController@index');
+    Route::post('newsletter/subscribe', 'NewsletterController@index');
     Route::get('landing-page', 'ConfigController@landing_page');
     Route::get('react-landing-page', 'ConfigController@react_landing_page');
 
@@ -439,6 +436,12 @@ Route::group(['namespace' => 'Api\V1', 'middleware'=>['localization','react']], 
     Route::get('get-vehicles', 'ConfigController@get_vehicles');
     Route::get('get-PaymentMethods', 'ConfigController@getPaymentMethods');
     Route::get('offline_payment_method_list', 'ConfigController@offline_payment_method_list');
+
+    Route::prefix('wallet-topup')->group(function () {
+        Route::get('list', [WalletTopupController::class, 'list']);
+        Route::post('store', [WalletTopupController::class, 'store']);
+        Route::get('detail/{id}', [WalletTopupController::class, 'detail']);
+    });
 });
 
 WebSocketsRouter::webSocket('/delivery-man/live-location', DMLocationSocketHandler::class);
