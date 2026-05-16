@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api\V1;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\{DB, Validator};
+use Illuminate\Support\Facades\{DB, Log, Validator};
 
 use App\CentralLogics\Helpers;
 use App\Http\Controllers\Controller;
@@ -124,6 +124,7 @@ class WalletTopupController extends Controller
             ], 422);
         } catch (\Throwable $th) {
             DB::rollBack();
+            Log::error($th->getMessage());
             return response()->json([
                 'errors' => [
                     ['code' => 'wallet_topup_problem', 'message' => translate('messages.wallet_topup_problem')]

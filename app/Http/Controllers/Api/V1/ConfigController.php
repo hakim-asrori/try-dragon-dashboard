@@ -51,6 +51,7 @@ class ConfigController extends Controller
             'new_restaurant',
             'most_reviewed_foods',
             'show_dm_earning',
+            'customer_can_cancel_order',
             'canceled_by_deliveryman',
             'canceled_by_restaurant',
             'timeformat',
@@ -241,6 +242,7 @@ class ConfigController extends Controller
         } else {
             $trial_period = data_get($settings, 'subscription_free_trial_days') > 0 ? data_get($settings, 'subscription_free_trial_days') : 0;
         }
+
         return response()->json([
             'business_name' => $settings['business_name'],
             'logo' => $settings['logo'],
@@ -376,6 +378,7 @@ class ConfigController extends Controller
             'subscription_free_trial_type' => (isset($settings['subscription_free_trial_type']) ? $settings['subscription_free_trial_type'] : 'day'),
             'subscription_free_trial_status' => (int)(isset($settings['subscription_free_trial_status']) ? $settings['subscription_free_trial_status'] : 0),
             'dine_in_order_option' => (int)(isset($settings['dine_in_order_option']) ? $settings['dine_in_order_option'] : 0),
+            'customer_can_cancel_order' => (bool) (isset($settings['customer_can_cancel_order']) ? $settings['customer_can_cancel_order'] : 0),
         ]);
     }
 

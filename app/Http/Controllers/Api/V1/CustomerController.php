@@ -2,30 +2,17 @@
 
 namespace App\Http\Controllers\Api\V1;
 
-use Carbon\Carbon;
-use App\Models\Food;
-use App\Models\User;
-use App\Models\Zone;
-use App\Models\Order;
-use App\Models\UserInfo;
-use Carbon\CarbonInterval;
-use App\Models\OrderDetail;
 use Illuminate\Http\Request;
-use App\CentralLogics\Helpers;
-use App\Mail\EmailVerification;
-use App\Models\BusinessSetting;
-use App\Models\CustomerAddress;
-use App\CentralLogics\SMS_module;
-use Illuminate\Support\Facades\DB;
-use App\Http\Controllers\Controller;
-use App\Models\EmailVerifications;
-use App\Models\PhoneVerification;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Mail;
-use Modules\Gateways\Traits\SmsGateway;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\{DB, Http, Mail, Validator};
 use Illuminate\Validation\Rules\Password;
+use Carbon\{Carbon, CarbonInterval};
+
+use App\Models\{BusinessSetting, CustomerAddress, EmailVerifications, Food, Order, OrderDetail, PhoneVerification, User, UserInfo, Zone};
+use App\CentralLogics\{Helpers, SMS_module};
+use App\Mail\EmailVerification;
+use App\Http\Controllers\Controller;
 use MatanYadaev\EloquentSpatial\Objects\Point;
+use Modules\Gateways\Traits\SmsGateway;
 
 class CustomerController extends Controller
 {
@@ -198,6 +185,7 @@ class CustomerController extends Controller
         $data['discount_amount'] = (float) data_get($discount_data, 'discount_amount');
         $data['discount_amount_type'] = data_get($discount_data, 'discount_amount_type');
         $data['validity'] = (string) data_get($discount_data, 'validity');
+        // dd($data);
 
         unset($data['orders']);
         return response()->json($data, 200);
@@ -219,34 +207,33 @@ class CustomerController extends Controller
 
 
 
-        $message=translate('messages.profile_successfully_updated');
+        $message = translate('messages.profile_successfully_updated');
 
-        if($request->button_type == 'change_password'){
+        if ($request->button_type == 'change_password') {
 
-            $message=translate('messages.Password_successfully_updated');
+            $message = translate('messages.Password_successfully_updated');
         }
 
         $user = User::where(['id' => $request?->user()?->id])->with('userinfo')->first();
 
         $login_settings = array_column(BusinessSetting::whereIn('key', ['email_verification_status', 'phone_verification_status', 'firebase_otp_verification'])->get(['key', 'value'])->toArray(), 'value', 'key');
 
-        if($request->button_type != 'change_password' && !$request->otp ){
-            if (  data_get($login_settings, 'phone_verification_status') == 1  && ($user->phone != $request->phone  || $request->button_type == 'phone' || (!$user->is_phone_verified  && !$request->button_type) )) {
+        if ($request->button_type != 'change_password' && !$request->otp) {
+            if (data_get($login_settings, 'phone_verification_status') == 1  && ($user->phone != $request->phone  || $request->button_type == 'phone' || (!$user->is_phone_verified  && !$request->button_type))) {
                 if (data_get($login_settings, 'firebase_otp_verification') == 1) {
                     return response()->json(['verification_on' => 'phone', 'verification_medium' => 'firebase', 'otp_send' => true, 'message' => translate('Otp_successfully_sent')], 200);
                 } else {
                     $verification_data =  $this->verification_check($request->phone);
                     return response()->json(['verification_on' => 'phone', 'verification_medium' => 'SMS', 'otp_send' => $verification_data['is_success'], 'message' => $verification_data['message']], $verification_data['code']);
                 }
-
-            } elseif ( data_get($login_settings, 'email_verification_status') == 1 && ($user->email != $request->email || $request->button_type == 'email' || !$user->is_email_verified && !$request->button_type )) {
+            } elseif (data_get($login_settings, 'email_verification_status') == 1 && ($user->email != $request->email || $request->button_type == 'email' || !$user->is_email_verified && !$request->button_type)) {
                 $verification_data =  $this->verification_check_email(['email' => $request->email, 'name' => $user?->f_name . ' ' . $user?->l_name]);
                 return response()->json(['verification_on' => 'email', 'verification_medium' => 'email', 'otp_send' => $verification_data['is_success'], 'message' => $verification_data['message']], $verification_data['code']);
             }
         }
 
 
-        if($user->is_email_verified  == 1 && $user->email != $request->email ){
+        if ($user->is_email_verified  == 1 && $user->email != $request->email) {
             $user->is_email_verified = 0;
             $user->save();
         }
@@ -261,7 +248,7 @@ class CustomerController extends Controller
                     return response()->json(['errors' => Helpers::error_processor($validator)], 403);
                 }
                 $verification_data =  $this->check_firebase_otp($request);
-            } else{
+            } else {
                 $verification_data =  $this->check_SMS_otp($request);
             }
 
@@ -271,7 +258,7 @@ class CustomerController extends Controller
             $user->is_phone_verified = 1;
             $user->save();
 
-            $message=translate('messages.Phone_successfully_verified');
+            $message = translate('messages.Phone_successfully_verified');
         }
 
         if ($request->verification_on == 'email' && $request->otp) {
@@ -282,8 +269,7 @@ class CustomerController extends Controller
             $user->is_email_verified = 1;
             $user->save();
 
-            $message=translate('messages.Email_successfully_verified');
-
+            $message = translate('messages.Email_successfully_verified');
         }
 
         $this->update_user_data($user, $request);
@@ -401,7 +387,7 @@ class CustomerController extends Controller
         }
 
         $otp = rand(100000, 999999);
-        if(env('APP_MODE') == 'test'){
+        if (env('APP_MODE') == 'test') {
             $otp = '123456';
         }
         DB::table('phone_verifications')->updateOrInsert(
@@ -433,7 +419,7 @@ class CustomerController extends Controller
     private function verification_check_email($data)
     {
         $otp = rand(100000, 999999);
-        if(env('APP_MODE') == 'test'){
+        if (env('APP_MODE') == 'test') {
             $otp = '123456';
         }
         DB::table('email_verifications')->updateOrInsert(
@@ -450,7 +436,7 @@ class CustomerController extends Controller
             $mail_status = Helpers::get_mail_status('profile_verification_mail_status_user');
 
             if (config('mail.status') && $mail_status == '1') {
-                Mail::to($data['email'])->send(new EmailVerification($otp, $data['name'],'profile_update' ));
+                Mail::to($data['email'])->send(new EmailVerification($otp, $data['name'], 'profile_update'));
                 $mailResponse = 'success';
             }
         } catch (\Exception $ex) {

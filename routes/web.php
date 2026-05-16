@@ -72,6 +72,7 @@ Route::get('payment-success', 'PaymentController@success')->name('payment-succes
 Route::get('payment-fail', 'PaymentController@fail')->name('payment-fail');
 Route::get('payment-cancel', 'PaymentController@cancel')->name('payment-cancel');
 
+Route::get('success', 'PaymentController@success')->name('success');
 Route::get('wallet-payment', 'WalletPaymentController@make_payment')->name('wallet.payment');
 
 $is_published = 0;

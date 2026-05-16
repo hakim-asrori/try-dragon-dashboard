@@ -2,22 +2,17 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Carbon\Carbon;
-use App\Models\User;
-use App\Models\Order;
-use App\Models\Newsletter;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\{DB, Mail};
+use Illuminate\Pagination\Paginator;
+use Carbon\Carbon;
+
+use App\Models\{BusinessSetting, Newsletter, Order, User};
 use App\CentralLogics\Helpers;
-use App\Models\BusinessSetting;
-use Illuminate\Support\Facades\DB;
-use App\Exports\CustomerListExport;
-use App\Exports\CustomerOrderExport;
+use App\Exports\{CustomerListExport, CustomerOrderExport, SubscriberListExport};
 use App\Http\Controllers\Controller;
 use Brian2694\Toastr\Facades\Toastr;
-use Illuminate\Pagination\Paginator;
-use Illuminate\Support\Facades\Mail;
 use Maatwebsite\Excel\Facades\Excel;
-use App\Exports\SubscriberListExport;
 
 class CustomerController extends Controller
 {
@@ -347,6 +342,9 @@ class CustomerController extends Controller
         Helpers::businessUpdateOrInsert(['key' => 'new_customer_discount_validity_type'], [
             'value' => $request['new_customer_discount_validity_type'] ?? 'day'
         ]);
+        Helpers::businessUpdateOrInsert(['key' => 'customer_can_cancel_order'], [
+            'value' => $request['customer_can_cancel_order']
+        ]);
         Toastr::success(translate('messages.customer_settings_updated_successfully'));
         return back();
     }
@@ -390,9 +388,9 @@ class CustomerController extends Controller
         $data = [
             'customers' => $customers,
             'subscription_date' => $request?->join_date,
-            'chose_first'=>  $show_limit ,
-            'search'=>  $request->search ,
-            'filter'=>  $request->filter ? translate('messages.Sort by').' '.$request->filter  : null ,
+            'chose_first' =>  $show_limit,
+            'search' =>  $request->search,
+            'filter' =>  $request->filter ? translate('messages.Sort by') . ' ' . $request->filter  : null,
 
         ];
 

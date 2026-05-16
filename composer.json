@@ -30,6 +30,7 @@
         "mercadopago/dx-php": "3.0.7",
         "mpdf/mpdf": "^8.1",
         "nwidart/laravel-modules": "^10.0",
+        "opcodesio/log-viewer": "^3.24",
         "paypal/paypal-checkout-sdk": "^1.0",
         "rap2hpoutre/fast-excel": "^5.2",
         "razorpay/razorpay": "^2.8",

@@ -227,7 +227,8 @@ class DeliverymanController extends Controller
         if ($validator->fails()) {
             return response()->json(['errors' => Helpers::error_processor($validator)], 403);
         }
-        $dm = DeliveryMan::where(['auth_token' => $request['token']])->first();
+
+        $dm = DeliveryMan::with('wallet')->where(['auth_token' => $request['token']])->first();
         $order = Order::where('id', $request['order_id'])
             ->whereNull('delivery_man_id')
             ->Notpos()
@@ -239,6 +240,11 @@ class DeliverymanController extends Controller
                 ]
             ], 404);
         }
+
+        if (!$dm->wallet || ($dm->wallet && $dm->wallet->total_earning < $order->order_amount)) {
+            return response()->json(['errors' => Helpers::error_formater('wallet_balance', translate('messages.wallet_not_enough'))], 400);
+        }
+
         if ($dm->current_orders >= config('dm_maximum_orders')) {
             return response()->json([
                 'errors' => [
@@ -476,7 +482,7 @@ class DeliverymanController extends Controller
         }
 
         OrderLogic::update_subscription_log($order);
-        return response()->json(['message' => translate('Status updated')], 200);
+        return response()->json(['message' => translate('status_updated')], 200);
     }
 
     public function get_order_details(Request $request)
@@ -599,11 +605,11 @@ class DeliverymanController extends Controller
             Order::where(['delivery_man_id' => $dm['id'], 'id' => $request['order_id']])->update([
                 'payment_status' => $request['status']
             ]);
-            return response()->json(['message' => translate('Payment status updated')], 200);
+            return response()->json(['message' => translate('Payment_status_updated')], 200);
         }
         return response()->json([
             'errors' => [
-                ['code' => 'order', 'message' => translate('not found')]
+                ['code' => 'order', 'message' => translate('not_found')]
             ]
         ], 404);
     }
@@ -1018,12 +1024,12 @@ class DeliverymanController extends Controller
 
         $key = isset($request['search']) ? explode(' ', $request['search']) : [];
         $paginator = AccountTransaction::when(isset($key), function ($query) use ($key) {
-                return $query->where(function ($q) use ($key) {
-                    foreach ($key as $value) {
-                        $q->orWhere('ref', 'like', "%{$value}%");
-                    }
-                });
-            })
+            return $query->where(function ($q) use ($key) {
+                foreach ($key as $value) {
+                    $q->orWhere('ref', 'like', "%{$value}%");
+                }
+            });
+        })
             ->where('type', 'collected')
             ->where('created_by', 'deliveryman')
             ->where('from_id', $dm->id)
@@ -1060,12 +1066,12 @@ class DeliverymanController extends Controller
 
         $key = isset($request['search']) ? explode(' ', $request['search']) : [];
         $paginator = ProvideDMEarning::when(isset($key), function ($query) use ($key) {
-                return $query->where(function ($q) use ($key) {
-                    foreach ($key as $value) {
-                        $q->orWhere('ref', 'like', "%{$value}%");
-                    }
-                });
-            })
+            return $query->where(function ($q) use ($key) {
+                foreach ($key as $value) {
+                    $q->orWhere('ref', 'like', "%{$value}%");
+                }
+            });
+        })
             ->where('delivery_man_id', $dm->id)
             ->where('method', 'adjustment')
             ->whereIn('ref', ['delivery_man_wallet_adjustment_partial', 'delivery_man_wallet_adjustment_full'])
