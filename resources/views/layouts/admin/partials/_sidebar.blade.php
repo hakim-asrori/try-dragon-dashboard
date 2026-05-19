@@ -1786,6 +1786,15 @@ $order_sch = \App\Models\Order::Notpos()
                         </span>
                     </a>
                 </li>
+                <li class="navbar-vertical-aside-has-menu">
+                    <a class="js-navbar-vertical-aside-menu-link nav-link" target="_blank"
+                        href="{{ route('log-viewer.index') }}" title="Log App">
+                        <i class="tio-document nav-icon"></i>
+                        <span class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate">
+                            Log App
+                        </span>
+                    </a>
+                </li>
                 <!-- End system_addons -->
 
                 @if (count(config('addon_admin_routes')) > 0)
@@ -1799,7 +1808,7 @@ $order_sch = \App\Models\Order::Notpos()
                             <i class="tio-puzzle nav-icon"></i>
                             <span
                                 class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate">{{ translate('Addon
-                                                                                                                                                                                                                                                                                                                                                                Menus') }}</span>
+                                                                                                                                                                                                                                                                                                                                                                                                                                Menus') }}</span>
                         </a>
                         <ul class="js-navbar-vertical-aside-submenu nav nav-sub"
                             style="display: {{ Request::is('admin/payment/configuration/*') || Request::is('admin/sms/configuration/*') ? 'block' : 'none' }}">
