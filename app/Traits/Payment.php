@@ -75,6 +75,7 @@ trait Payment
             'cashfree' => 'payment/cashfree/pay',
             'instamojo' => 'payment/instamojo/pay',
             'duitku_qris' => 'payment/duitku-qris/pay',
+            'pg_qris' => 'payment/pg-local/pay-qr',
         ];
         if (array_key_exists($payment->payment_method, $routes)) {
             return url("{$routes[$payment->payment_method]}/?payment_id={$payment->id}");

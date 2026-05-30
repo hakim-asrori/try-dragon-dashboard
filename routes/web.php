@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\{DB, Route};
 
 use App\Models\BusinessSetting;
 use App\Http\Controllers\{BkashPaymentController, FirebaseController, FlutterwaveV3Controller, LiqPayController, MercadoPagoController, PaymobController, PaypalPaymentController, PaystackController, PaytabsController, PaytmController, RazorPayController, SenangPayController, SslCommerzPaymentController, StripePaymentController};
-use App\Http\Controllers\PG\DuitkuController;
+use App\Http\Controllers\PG\{DuitkuController, PgLocalController};
 
 /*
 |--------------------------------------------------------------------------
@@ -191,6 +191,13 @@ if (!$is_published) {
                 Route::any('pay', [DuitkuController::class, 'paymentQr'])->name('pay');
             });
             Route::any('duitku/callback-billing', [DuitkuController::class, 'callbackBilling'])->name('callback.billing')->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class]);
+        });
+
+        Route::group(['as' => 'pg-local.'], function () {
+            Route::prefix('pg-local')->group(function () {
+                Route::any('pay-qr', [PgLocalController::class, 'paymentQr'])->name('pay-qr');
+                Route::any('callback-billing', [PgLocalController::class, 'callbackBilling'])->name('callback.billing')->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class]);
+            });
         });
     });
 }

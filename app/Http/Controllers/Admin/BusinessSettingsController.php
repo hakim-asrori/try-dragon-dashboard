@@ -851,7 +851,7 @@ class BusinessSettingsController extends Controller
         $request['status'] = $request->status ?? 0;
 
         $validation = [
-            'gateway' => 'required|in:mercadopago,duitku_qris',
+            'gateway' => 'required|in:mercadopago,duitku_qris,pg_qris',
             'mode' => 'required|in:live,test'
         ];
 
@@ -970,6 +970,15 @@ class BusinessSettingsController extends Controller
                 'surcharge_percentage' => 'required_if:status,1|min:0',
                 'trx_min_amount' => 'required_if:status,1|min:0',
                 'trx_max_amount' => 'required_if:status,1|min:0',
+            ];
+        } elseif ($request['gateway'] == 'pg_qris') {
+            $additional_data = [
+                'status' => 'required|in:1,0',
+                'base_url' => 'required_if:status,1',
+                'merchant_uuid' => 'required_if:status,1',
+                'api_key' => 'required_if:status,1',
+                'api_key_secret' => 'required_if:status,1',
+                'method' => 'required_if:status,1',
             ];
         }
 
